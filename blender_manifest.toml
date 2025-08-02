@@ -3,7 +3,7 @@ schema_version = "1.0.0"
 # Example of manifest file for a Blender extension
 # Change the values according to your extension
 id = "add_std_paper_size"
-version = "0.0.2"
+version = "0.0.3"
 name = "Add Std Paper-Format"
 tagline = "Blender add-on to add planes with standardized paper formats"
 maintainer = "Achim A."
@@ -15,7 +15,7 @@ type = "add-on"
 
 # # Optional: tag list defined by Blender and server, see:
 # # https://docs.blender.org/manual/en/dev/advanced/extensions/tags.html
-# tags = ["Animation", "Sequencer"]
+tags = ["Add Mesh"]
 
 blender_version_min = "4.2.0"
 # # Optional: Blender version that the extension does not support, earlier versions are supported.
@@ -65,11 +65,14 @@ license = [
 
 # # Optional: advanced build settings.
 # # https://docs.blender.org/manual/en/dev/advanced/extensions/command_line_arguments.html#command-line-args-extension-build
-# [build]
+[build]
 # # These are the default build excluded patterns.
 # # You only need to edit them if you want different options.
-# paths_exclude_pattern = [
-#   "__pycache__/",
-#   "/.git/",
-#   "/*.zip",
-# ]
+paths_exclude_pattern = [
+  "__pycache__/",
+  "/images/",
+  "/.git/",
+  "/*.zip",
+  "README.md",
+  "build.ps1",
+]

@@ -2,8 +2,8 @@
 
 import bpy
 
-
-
+# source:
+# https://paper-size.com
 PAPER_STANDARDS = {
     'ISO_A': [
         ('A0', 'A0', '', 841, 1189),
@@ -470,37 +470,3 @@ class OBJECT_OT_add_paper_mesh(bpy.types.Operator):
         split_right.label(text=self.str_size_in)
 
         
-
-def menu_func(self, context):
-    self.layout.operator(
-        OBJECT_OT_add_paper_mesh.bl_idname,
-        text="Add Std Paper Format",
-        icon='CON_SIZELIMIT')
-
-     #self.layout.operator("mesh.add_paper_mesh", icon='CON_SIZELIMIT')
-
-
-
-
-##############################################################################
-# Add-On Handling
-##############################################################################
-__classes__ = (
-    OBJECT_OT_add_paper_mesh,
-)
-
-
-def register():
-    # register classes
-    for c in __classes__:
-        bpy.utils.register_class(c)
-        print(f'registered {c}')
-    bpy.types.VIEW3D_MT_mesh_add.append(menu_func)
-
-
-def unregister():
-    # unregister classes
-    for c in __classes__:
-        bpy.utils.unregister_class(c)
-        print(f'unregistered {c}')
-    bpy.types.VIEW3D_MT_mesh_add.remove(menu_func)

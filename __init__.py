@@ -12,48 +12,51 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
-import sys
-import importlib
 
-modulesNames = [
-    'papers',
-        ]
+# ----------------------------------------------
+# Import modules
+# ----------------------------------------------
+
+if "bpy" in locals():
+    import importlib
+
+    importlib.reload(papers)
+else:
+    from . import papers
+
+import bpy
 
 
-modulesFullNames = {}
-for currentModuleName in modulesNames:
-    modulesFullNames[currentModuleName] = (
-        '{}.{}'.format(__name__, currentModuleName)
-        )
+##############################################################################
+# Add-On Handling
+##############################################################################
+__classes__ = (
+    papers.OBJECT_OT_add_paper_mesh,
+)
 
-for currentModuleFullName in modulesFullNames.values():
-    if currentModuleFullName in sys.modules:
-        importlib.reload(
-            sys.modules[currentModuleFullName]
-            )
-    else:
-        globals()[currentModuleFullName] = importlib.import_module(
-            currentModuleFullName
-            )
-        setattr(
-            globals()[currentModuleFullName],
-            'modulesNames',
-            modulesFullNames
-            )
+
+def menu_func(self, context):
+    self.layout.operator(
+        papers.OBJECT_OT_add_paper_mesh.bl_idname,
+        text="Add Std Paper Format",
+        icon='CON_SIZELIMIT')
 
 
 def register():
-    for currentModuleName in modulesFullNames.values():
-        if currentModuleName in sys.modules:
-            if hasattr(sys.modules[currentModuleName], 'register'):
-                sys.modules[currentModuleName].register()
+    # register classes
+    for cls in __classes__:
+        bpy.utils.register_class(cls)
+        print(f'registered {cls}')
+    bpy.types.VIEW3D_MT_mesh_add.append(menu_func)
 
 
 def unregister():
-    for currentModuleName in modulesFullNames.values():
-        if currentModuleName in sys.modules:
-            if hasattr(sys.modules[currentModuleName], 'unregister'):
-                sys.modules[currentModuleName].unregister()
+    # unregister classes
+    for cls in __classes__:
+        bpy.utils.unregister_class(cls)
+        print(f'unregistered {cls}')
+    bpy.types.VIEW3D_MT_mesh_add.remove(menu_func)
+
 
 
 if __name__ == "__main__":
