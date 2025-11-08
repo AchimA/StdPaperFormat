@@ -3,7 +3,7 @@ schema_version = "1.0.0"
 # Example of manifest file for a Blender extension
 # Change the values according to your extension
 id = "add_std_paper_size"
-version = "0.0.3"
+version = "0.1.0"
 name = "Add Std Paper-Format"
 tagline = "Blender add-on to add planes with standardized paper formats"
 maintainer = "Achim A."
@@ -11,7 +11,7 @@ maintainer = "Achim A."
 type = "add-on"
 
 # # Optional: link to documentation, support, source files, etc
-# website = "https://extensions.blender.org/add-ons/my-example-package/"
+website = "https://extensions.blender.org/add-ons/add-std-paper-size/"
 
 # # Optional: tag list defined by Blender and server, see:
 # # https://docs.blender.org/manual/en/dev/advanced/extensions/tags.html

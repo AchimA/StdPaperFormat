@@ -345,6 +345,20 @@ def update_format(self, context):
             self.size_x = f[3] / 1000  # Convert mm to meters
             self.size_y = f[4] / 1000
             break
+    self.size_updated = False
+    update_name(self, context)
+    
+def update_name(self, context):
+    if self.size_updated:
+        self.str_obj_name = "{}_{}".format(self.str_size_mm, self.str_size_in)
+    else:
+        self.str_obj_name = "{}_{}".format(self.paper_standard, self.paper_format)
+
+def update_size(self, context):
+    self.size_updated = True
+    update_name(self, context)
+
+
 
 class OBJECT_OT_add_paper_mesh(bpy.types.Operator):
     bl_idname = "mesh.add_paper_mesh"
@@ -368,7 +382,8 @@ class OBJECT_OT_add_paper_mesh(bpy.types.Operator):
         soft_max=10,
         subtype='DISTANCE',
         unit='LENGTH',
-        precision=4
+        precision=4,
+        update=update_size
         )    
     size_y: bpy.props.FloatProperty(
         name='Size y',
@@ -377,7 +392,8 @@ class OBJECT_OT_add_paper_mesh(bpy.types.Operator):
         soft_max=10,
         subtype='DISTANCE',
         unit='LENGTH',
-        precision=4
+        precision=4,
+        update=update_size
         )
     paper_standard: bpy.props.EnumProperty(
         name="Standard",
@@ -397,6 +413,12 @@ class OBJECT_OT_add_paper_mesh(bpy.types.Operator):
     str_size_in: bpy.props.StringProperty(
         name="Size [in]"
     )
+    str_obj_name: bpy.props.StringProperty(
+        name="Paper Mesh Object"
+    )
+    size_updated: bpy.props.BoolProperty(
+        default=False
+        )
     
     def invoke(self, context, event):
         # set default object types:
@@ -411,8 +433,6 @@ class OBJECT_OT_add_paper_mesh(bpy.types.Operator):
         return self.execute(context)
 
     def execute(self, context):
-        #self.new_plane.scale = (self.size_x, self.size_y, 1)
-        #self.report({'INFO'}, 'exec')
 
         if self.flip:
             SH = self.size_y
@@ -421,18 +441,23 @@ class OBJECT_OT_add_paper_mesh(bpy.types.Operator):
             SH = self.size_x
             SV = self.size_y
         
+        
         self.str_size_mm = '{:.1f}x{:.1f} mm'.format(SH*1000, SV*1000)
         self.str_size_in = '{:.1f}x{:.1f} in'.format(SH*1000/25.4, SV*1000/25.4)
+
+        if self.size_updated==True:
+            update_size(self, context)
 
         bpy.ops.mesh.primitive_plane_add(size=1)
         bpy.ops.transform.resize(value=(SH, SV, 1))
         bpy.ops.object.transform_apply(scale=True)
 
-        bpy.context.active_object.name = "PaperMesh_{}_{}".format(self.paper_standard, self.paper_format)
-        bpy.context.active_object.data.name = "PaperMesh_{}_{}".format(self.paper_standard, self.paper_format)
+        bpy.context.active_object.name = self.str_obj_name
+        bpy.context.active_object.data.name = self.str_obj_name + "_Mesh"
         
         bpy.ops.object.mode_set(mode='EDIT')
         bpy.ops.mesh.select_all(action='SELECT')
+        
         if self.uv_ratio:
             bpy.ops.uv.cube_project(correct_aspect=True)
         else:
